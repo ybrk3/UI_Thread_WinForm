@@ -47,6 +47,22 @@ var fibonacciSequence = Enumerable.Range(0, 50)
     .sequence;
 Console.WriteLine(fibonacciSequence);
 
+int[] nums = { 1, 3, 5, 7, 8 };
+
+void BubbleSort<T>(T[] arr)
+{
+    for (int i = 0; i < arr.Length; i++)
+    {
+        if (i - 1 < 0) continue;
+        //if (arr[i] > arr[i-1])
+        //{
+        //}
+    }
+}
+
+
+
+
 #region Objects
 class Transaction
 {
