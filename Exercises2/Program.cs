@@ -219,8 +219,8 @@ List<Order3> orders3 = new List<Order3>
 
 //Exercise 1: Find the employees who have skills in both "C#" and "SQL".
 var employeesWithSpecificTalent = employees3
-    .Where(e => e.Skills.Contains("C#") && e.Skills.Contains("SQL"))
-    .ToDictionary(e => e.EmployeeId);
+    .Where(employee => employee.Skills.Contains("C#") && employee.Skills.Contains("SQL"))
+    .ToDictionary(employee => employee.EmployeeId);
 
 //Exercise 2: Find the products that belong to both "Electronics" and "Computers" categories.
 var productsWithSpecCategory = products3
@@ -239,6 +239,7 @@ var departmentWithHighestSalary = employees3
     .OrderByDescending(d => d.AvgSalary)
     .First();
 
+
 //Exercise 4: Find the employees who have ordered the most expensive product (based on order total amount).
 var employeeWithMostExpensiveOrder = employees3
     .Where(e => orders3
@@ -250,16 +251,20 @@ var employeeWithMostExpensiveOrder = employees3
                     .Sum(p => p.Price * o.Quantity)))
     .FirstOrDefault();
 
+
 //Exercise 5: Find the average salary of employees who have ordered at least one product.
 var avgSalaryOfActiveEmployees = employees3
-    .Where(e => orders3
-        .Any(o => o.CustomerName == $"{e.FirstName} {e.LastName}"))
+    .Where(e => orders3.Any(o => o.CustomerName == $"{e.FirstName} {e.LastName}"))
     .Average(e => e.Salary);
 
 //Exercise 6: Find the top 3 most frequently ordered products along with the total quantity sold.
 var most3ProductsOrdered = orders3
     .GroupBy(o => o.ProductId)
-    .OrderByDescending(g => g.Sum(o => o.Quantity))
+    .Select(g => new
+    {
+        Product = products3.FirstOrDefault(p => p.ProductId == g.Key),
+        TotalQuantity = g.Sum(o => o.Quantity)
+    })
     .Take(3)
     .ToList();
 
@@ -267,8 +272,8 @@ var most3ProductsOrdered = orders3
 List<string> requiredSkillsForProject = new List<string> { "C#", "ASP.NET" };
 
 var employeesWithRequiredSkilss = employees3
-    .Where(e => requiredSkillsForProject.All(requiredSkill => e.Skills.Contains(requiredSkill)))
-    .ToList();
+    .Where(e => requiredSkillsForProject.All(rs => e.Skills.Contains(rs)))
+    .ToDictionary(e => e.EmployeeId);
 
 //Exercise 8: Find the employees who have placed at least two orders with a total quantity greater than 5.
 var employeesWithAtLeastTwoOrders = employees3
@@ -291,19 +296,100 @@ List<Project4> projects4 = new List<Project4>
 
 List<Department4> departments4 = new List<Department4>
 {
-    new Department4 { Name = "IT", EmployeeIds = new List<int> { 1, 2, 4 } },
+    new Department4 { Name = "IT", EmployeeIds = new List<int> {  2, 4 } },
     new Department4 { Name = "HR", EmployeeIds = new List<int> { 3, 5, 6 } },
     new Department4 { Name = "Finance", EmployeeIds = new List<int> { 7, 8, 9 } }
 };
 List<Employee3> employees4 = new List<Employee3>
 {
-    new Employee3 { EmployeeId = 1, FirstName = "John", LastName = "Doe", Age = 30, Salary = 65000, Department = "IT", Skills = new List<string> { "C#", "SQL", "ASP.NET", "JavaScript", "HTML", "CSS" } },
-    new Employee3 { EmployeeId = 2, FirstName = "Alice", LastName = "Smith", Age = 28, Salary = 55000, Department = "HR", Skills = new List<string> { "Communication", "Recruitment" } },
-    new Employee3 { EmployeeId = 3, FirstName = "Bob", LastName = "Johnson", Age = 35, Salary = 75000, Department = "Finance", Skills = new List<string> { "Financial Analysis", "Excel" } }
+    new Employee3 { EmployeeId = 1, FirstName = "John", LastName = "Doe", Age = 30, Salary = 65000, Department = "IT", Skills = new List<string> { "C#", "SQL", "ASP.NET", "JavaScript", "HTML", "CSS","Java" } },
+    new Employee3 { EmployeeId = 2, FirstName = "Alice", LastName = "Smith", Age = 28, Salary = 55000, Department = "IT", Skills = new List<string> { "Communication", "Recruitment" } },
+    new Employee3 { EmployeeId = 3, FirstName = "Bob", LastName = "Johnson", Age = 26, Salary = 75000, Department = "HR", Skills = new List<string> { "Financial Analysis", "Excel",} },
+    new Employee3 { EmployeeId = 4, FirstName = "Bob", LastName = "Johnson", Age = 36, Salary = 75000, Department = "IT", Skills = new List<string> { "Financial Analysis", "Excel" } },
+    new Employee3 { EmployeeId = 5, FirstName = "Bob", LastName = "Johnson", Age = 35, Salary = 80000, Department = "HR", Skills = new List<string> { "Financial Analysis", "Excel" } },
+    new Employee3 { EmployeeId = 6, FirstName = "Alice", LastName = "Johnson", Age = 46, Salary = 60000, Department = "HR", Skills = new List<string> { "Financial Analysis", "Excel", "C#", "SQL",  "JavaScript", "HTML", "CSS", "Java" } },
+    new Employee3 { EmployeeId = 7, FirstName = "Lucas", LastName = "Johnson", Age = 36, Salary = 100000, Department = "Finance", Skills = new List<string> { "Financial Analysis", "Excel" } },
+    new Employee3 { EmployeeId = 8, FirstName = "Beckham", LastName = "Smith", Age = 29, Salary = 80000, Department = "Finance", Skills = new List<string> { "Financial Analysis", "Excel" } },
+    new Employee3 { EmployeeId = 9, FirstName = "Leo", LastName = "Smith", Age = 30, Salary = 85000, Department = "Finance", Skills = new List<string> { "Financial Analysis", "Excel", "C#", "SQL", "ASP.NET", "JavaScript", "HTML", "CSS", "Java" } },
+    new Employee3 { EmployeeId = 10, FirstName = "Robert", LastName = "Smith", Age = 30, Salary = 85000, Department = "Finance", Skills = new List<string> { "Financial Analysis", "Excel", "C#", "SQL", "ASP.NET", "JavaScript", "HTML", "CSS", "Java" } }
+};
+List<Product3> products4 = new List<Product3>
+{
+    new Product3 { ProductId = 101, Name = "Laptop", Price = 1200, StockQuantity = 50, Categories = new List<string> { "Electronics", "Computers" } },
+    new Product3 { ProductId = 102, Name = "Phone", Price = 800, StockQuantity = 100, Categories = new List<string> { "Electronics", "Mobile" } },
+    new Product3 { ProductId = 103, Name = "Tablet", Price = 500, StockQuantity = 80, Categories = new List<string> { "Electronics", "Computers" } }
+};
+List<Order3> orders4 = new List<Order3>
+{
+    new Order3 { OrderId = 1, ProductId = 101, Quantity = 2, CustomerName = "David Johnson" },
+    new Order3 { OrderId = 2, ProductId = 102, Quantity = 5, CustomerName = "Mary Smith" },
+    new Order3 { OrderId = 3, ProductId = 101, Quantity = 3, CustomerName = "John Doe" },
+    new Order3 { OrderId = 4, ProductId = 103, Quantity = 1, CustomerName = "Alice Johnson" },
+    new Order3 { OrderId = 5, ProductId = 101, Quantity = 4, CustomerName = "Robert Smith" },
+    new Order3 { OrderId = 6, ProductId = 102, Quantity = 5, CustomerName = "John Doe" }
 };
 
-
 //Exercise 9: Find the employees who have worked on all the required skills for the "Web Application" project.
+var eligibleEmployees = employees4
+    .Where(e => projects4
+                  .First(p => p.Name.Equals("Web Application"))
+                  .RequiredSkills
+                  .All(rs => e.Skills.Contains(rs)))
+    .ToHashSet();
+
+
+//Exercise 11: Find the department that has the highest total salary for its employees.
+var HighestSalaryDepartment = departments4
+    .Select(d => new
+    {
+        DepartmentName = d.Name,
+        TotalSalary = d.EmployeeIds.Sum(employeeId => employees4
+                                                        .FirstOrDefault(e => e?.EmployeeId == employeeId)
+                                                        ?.Salary)
+    })
+    .OrderByDescending(d => d.TotalSalary)
+    .FirstOrDefault()
+    ?.DepartmentName;
+
+
+//Exercise 12: Find the employees who have ordered at least two different products.
+var employeesWithAtLeastTwoDifferentOrders = employees4
+    .Where(e => orders4
+                    .Where(o => o.CustomerName == $"{e.FirstName} {e.LastName}")
+                    .Select(o => o.ProductId)
+                    .Distinct()
+                    .Count() >= 2)
+    .ToDictionary(e => e.EmployeeId);
+
+//Exercise 14: Find the departments with employees who have ordered the most products.
+var departmentsWithMostOrderedProducts = departments4
+    .Select(d => new
+    {
+        Department = d.Name,
+        OrderedQuantity = d.EmployeeIds.Sum(employeeId => orders4.
+                                                        Count(o => o.CustomerName == $"{employees4.First(e => e.EmployeeId == employeeId).FirstName} {employees4.First(e => e.EmployeeId == employeeId).LastName}"))
+    })
+    .OrderByDescending(d => d.OrderedQuantity)
+    .First()
+    .Department;
+
+
+//Exercise 15: Find the projects that have no required skills.
+var projectNoRequiredSkills = projects4
+    .Where(p => p.RequiredSkills.Count == 0)
+    .ToDictionary(p => p.ProjectId);
+
+
+//Exercise 16: Find the employees who have placed an order but have not been assigned to any department.
+var employeesNotAssigned = employees4
+   .Where(e => orders4.Any(o => o.CustomerName == $"{e.FirstName} {e.LastName}"))
+   .Where(e => !departments4.Any(d => d.EmployeeIds.Any(employeeId => e.EmployeeId == employeeId)))
+   .Select(e => new
+   {
+       EmployeeId = e.EmployeeId,
+       EmployeeNotAssigned = string.Concat(e.FirstName, " ", e.LastName),
+   })
+   .ToDictionary(e => e.EmployeeId);
 
 
 #endregion
